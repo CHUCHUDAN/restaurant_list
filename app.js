@@ -24,14 +24,21 @@ app.get('/restaurants/:restaurant_id', (req, res) => {
   const restaurant = restaurantList.results.find(item => item.id.toString() === req.params.restaurant_id)
   res.render('show', { restaurant: restaurant })
 })
+
 app.get('/search', (req, res) => {
-  if (typeArray.some(item => item.toLowerCase().includes(req.query.keyword.toLowerCase()))) {
-    const types = restaurantList.results.filter(item => item.category.toLowerCase().includes(req.query.keyword.toLowerCase()))
-    res.render('index', { restaurants: types, keyword: req.query.keyword })
-  } else {
-    const restaurantArray = restaurantList.results.filter(item => item.name.toLowerCase().includes(req.query.keyword.toLowerCase()))
-    res.render('index', { restaurants: restaurantArray, keyword: req.query.keyword })
+  if (!req.query.keyword) {
+    return res.redirect('/')
   }
+  const keywords = req.query.keyword
+  const keyword = req.query.keyword.trim().toLowerCase()
+  const searchResult = restaurantList.results.filter(data =>
+    data.name.toLowerCase().includes(keyword) ||
+    data.category.toLowerCase().includes(keyword)
+  )
+  if (searchResult.length === 0) {
+    return res.render("noresult", { keywords })
+  }
+  return res.render('index', { restaurants: searchResult, keywords})
 })
 //啟動並監聽伺服器
 app.listen(port, () => {
