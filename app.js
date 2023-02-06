@@ -12,8 +12,7 @@ app.set('view engine', 'handlebars')
 
 app.use(express.static('public'))
 
-//設定種類資料
-const typeArray = ['中東料理', '日本料理', '義式餐廳', '美式', '酒吧', '咖啡']
+
 
 //設定路由
 app.get('/', (req, res) => {
@@ -36,7 +35,7 @@ app.get('/search', (req, res) => {
     data.category.toLowerCase().includes(keyword)
   )
   if (searchResult.length === 0) {
-    return res.render("noresult", { keywords })
+    return res.render('noresult', { keywords })
   }
   return res.render('index', { restaurants: searchResult, keywords})
 })
